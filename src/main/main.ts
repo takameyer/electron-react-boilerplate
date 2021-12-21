@@ -78,6 +78,8 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
@@ -116,13 +118,13 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
-app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
+// app.on('window-all-closed', () => {
+//   // Respect the OSX convention of having the application in memory even
+//   // after all windows have been closed
+//   // if (process.platform !== 'darwin') {
+//   app.quit();
+//   // }
+// });
 
 app
   .whenReady()

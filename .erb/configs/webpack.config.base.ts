@@ -5,9 +5,10 @@
 import webpack from 'webpack';
 import webpackPaths from './webpack.paths';
 import { dependencies as externals } from '../../release/app/package.json';
+import nodeExternals from 'webpack-node-externals'
 
 export default {
-  externals: [...Object.keys(externals || {})],
+externals: [...Object.keys(externals || {}), nodeExternals({allowlist:[/webpack(\/.*)?/]})],
 
   stats: 'errors-only',
 
@@ -40,7 +41,7 @@ export default {
    */
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
-    modules: [webpackPaths.srcPath, 'node_modules'],
+    modules: [webpackPaths.srcPath, 'node_modules']
   },
 
   plugins: [

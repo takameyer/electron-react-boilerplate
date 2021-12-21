@@ -30,7 +30,7 @@ export default merge(baseConfig, {
 
   mode: 'production',
 
-  target: ['web', 'electron-renderer'],
+  target: [ 'web', 'electron-renderer'],
 
   entry: [
     'core-js',
