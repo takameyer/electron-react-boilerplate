@@ -27,12 +27,33 @@ const styles = {
 
 function App() {
   useEffect(() => {
-    const realm = new Realm({ schema: [Task] });
-    realm.write(() => {
-      realm.create(Task, Task.generate('test'));
-    });
-    const tasks = realm.objects(Task);
-    console.log(JSON.stringify(tasks.toJSON(), null, 2));
+    (async () => {
+      // const realm = new Realm({ schema: [Task], path: 'renderer' });
+      // realm.write(() => {
+      //   realm.create(Task, Task.generate('test'));
+      // });
+      // const tasks = realm.objects(Task);
+      // console.log('*** Non-synced', JSON.stringify(tasks.toJSON(), null, 2));
+
+      // const app = new Realm.App({ id: 'application-0-qfcfo' });
+      // Realm.App.Sync.setLogLevel(app, 'all');
+
+      // const credentials = Realm.Credentials.anonymous();
+      // const user = await app.logIn(credentials);
+
+      const syncedRealm = new Realm({
+        schema: [Task],
+        path: 'main-sync',
+        sync: true,
+      });
+      // setInterval(() => {
+      syncedRealm.write(() => {
+        syncedRealm.create(Task, Task.generate('test'));
+      });
+      // }, 100);
+      const syncedTasks = syncedRealm.objects(Task);
+      console.log('*** Synced', JSON.stringify(syncedTasks.toJSON(), null, 2));
+    })();
   }, []);
 
   // const realm = useRealm();

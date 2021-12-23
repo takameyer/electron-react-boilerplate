@@ -14,6 +14,7 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import Task from '../renderer/app/models/Task';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
@@ -93,6 +94,45 @@ const createWindow = async () => {
       mainWindow.minimize();
     } else {
       mainWindow.show();
+
+      // const realm = new Realm({ schema: [Task], path: 'main' });
+      // realm.write(() => {
+      //   realm.create(Task, Task.generate('test'));
+      // });
+      // const tasks = realm.objects(Task);
+      // console.log('*** Non-synced', JSON.stringify(tasks.toJSON(), null, 2));
+
+      (async () => {
+        const app = new Realm.App({ id: 'application-0-qfcfo' });
+        Realm.App.Sync.setLogLevel(app, 'all');
+
+        const credentials = Realm.Credentials.anonymous();
+        const user = await app.logIn(credentials);
+
+        const syncedRealm = await Realm.open({
+          schema: [Task],
+          path: 'main-sync',
+          sync: {
+            user,
+            partitionValue: '',
+            newRealmFileBehavior: { type: 'downloadBeforeOpen' },
+            existingRealmFileBehavior: { type: 'openImmediately' },
+            error: (error) => {
+              console.error('new realm error: ', error);
+            },
+          },
+        });
+        // setInterval(() => {
+        syncedRealm.write(() => {
+          syncedRealm.create(Task, Task.generate('test'));
+        });
+        // }, 100);
+        const syncedTasks = syncedRealm.objects(Task);
+        console.log(
+          '*** Synced',
+          JSON.stringify(syncedTasks.toJSON(), null, 2)
+        );
+      })();
     }
   });
 

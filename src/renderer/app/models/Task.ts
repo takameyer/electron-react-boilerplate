@@ -11,6 +11,7 @@ export default class Task extends Realm.Object {
   static generate(description: string) {
     return {
       _id: new Realm.BSON.ObjectId(),
+      partition: '',
       description,
       isComplete: false,
       createdAt: new Date(),
@@ -23,6 +24,7 @@ export default class Task extends Realm.Object {
     primaryKey: '_id',
     properties: {
       _id: 'objectId',
+      partition: 'string',
       description: 'string',
       isComplete: { type: 'bool', default: false },
       createdAt: 'date',
